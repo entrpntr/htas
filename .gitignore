@@ -3,6 +3,6 @@ dist/
 *.hi
 *.o
 *.gbc
-*.sav
 *.gb
 *.swp
+*.txt

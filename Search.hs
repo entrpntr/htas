@@ -21,7 +21,7 @@ replaceProbability oldCheck newCheck =
     let val1 = value oldCheck
         val2 = value newCheck
     in
-    min 1 $ exp (-(61-val2)/(61-val1))
+    min 1 $ 0.42069 ** ((66.6-val2)/(66.6-val1))  -- the parameters for this function are derived from advanced mathematical principles and are provably optimal for this particular context
 
 coin :: Double -> IO Bool
 coin p = (< p) <$> randomRIO (0, 1)
@@ -45,7 +45,8 @@ segmentStep seg sourceRef targetRef cb = do
                     , currentState = newState
                     , value = newVal
                     }
-            if newVal > 20 -- Lots of paths sneak by with a value of 1, let's just restrict ourselves
+            let segNum = length (revPaths newCheck)
+            if (((segNum <= 7) && (newVal > 57)) || ((segNum > 7) && (segNum <= 9) && (newVal > 55)) || ((segNum > 9) && (newVal > 54))) -- Lots of paths sneak by with a value of 1, let's just restrict ourselves
             then do
                 cb newCheck
                 targetDat <- readIORef targetRef

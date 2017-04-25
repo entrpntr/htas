@@ -32,17 +32,21 @@ main :: IO ()
 main = do
     hSetBuffering stdout NoBuffering
 
-    baseSave <- BS.readFile "pokered_r3_lass.sav"
+    baseSave <- BS.readFile "red_mp_lass.sav"
 
     printf "Creating initial states"
     gb <- create
     loadRomFile gb "pokered.gbc"
-    initialStates <- for [0..59] $ \frame -> do
+    let frames = concat [[0..35], [38..59]]
+    initialStates <- for frames $ \frame -> do
         printf "."
         loadSaveData gb (setSaveFrames frame baseSave)
         reset gb
         doOptimalIntro gb
-        saveState gb
+        state <- saveState gb
+        let frm = fromIntegral frame
+        let frm2 = (61 :: Int)
+        pure (state, frm, frm2, 0)
     printf "\n"
 
     launchSearch r3LassSegments initialStates
@@ -73,13 +77,15 @@ launchSearch segs initialStates = do
                 forkIO . forever $ do
                     segmentStep (s gb inputRef) sourceRef targetRef $ \check -> do
                         withMVar lock $ \_ -> do
-                            printf "Segment %d\tValue %f\n" (length (revPaths check)) (value check)
-                        when (length ss == 1 && value check > 20) $ do
+                            let (_, _, _, dsum) = (currentState check) !! 0
+                            printf "Segment %d\tValue %f  (dsum=%d)\n" (length (revPaths check)) (value check) (dsum)
+                        when (length ss == 1 && value check > 54) $ do
+                            let (_, _, _, dsum) = (currentState check) !! 0
+                            let description = printf "Value %f (dsum=%d)\t%s\n" (value check) (dsum) (show . reverse $ revPaths check)
+                            appendFile "almost_paths_r3lass_nopal.txt" description
+                        when (length ss == 0 && value check > 54) $ do
                             let description = printf "Value %f\t%s\n" (value check) (show . reverse $ revPaths check)
-                            appendFile "almost_paths.txt" description
-                        when (length ss == 0 && value check > 20) $ do
-                            let description = printf "Value %f\t%s\n" (value check) (show . reverse $ revPaths check)
-                            appendFile "complete_paths.txt" description
+                            appendFile "complete_paths_r3lass_nopal.txt" description
                     threadDelay 10000
                 launchLoop ss targetRef lock
 

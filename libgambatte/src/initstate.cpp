@@ -1170,11 +1170,11 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.cpu.PC = 0x100;
 	state.cpu.SP = 0xFFFE;
 	state.cpu.A = 0x11;
-	state.cpu.B = 0x14;
+	state.cpu.B = 0x15;
 	state.cpu.C = 0x00;
 	state.cpu.D = 0x00;
 	state.cpu.E = 0x08;
-	state.cpu.F = 0x80;
+	state.cpu.F = 0x00;
 	state.cpu.H = 0x00;
 	state.cpu.L = 0x7C;
 	state.cpu.skip = false;
@@ -1234,7 +1234,7 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	std::memset(state.ppu.spAttribList, 0, sizeof(state.ppu.spAttribList));
 	std::memset(state.ppu.spByte0List, 0, sizeof(state.ppu.spByte0List));
 	std::memset(state.ppu.spByte1List, 0, sizeof(state.ppu.spByte1List));
-	state.ppu.videoCycles = 0x94 * 456ul - 16;
+	state.ppu.videoCycles = 67464;
 	state.ppu.enableDisplayM0Time = state.cpu.cycleCounter;
 	state.ppu.winYPos = 0xFF;
 	state.ppu.xpos = 0;

@@ -14,6 +14,8 @@ wWalkCounter = 0xCFC5
 
 wIsInBattle = 0xD057
 
+wd736 = 0xD736
+
 data Location = Location
     { locMap :: Word8
     , locX :: Word8
